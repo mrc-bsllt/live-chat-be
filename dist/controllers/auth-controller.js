@@ -8,6 +8,6 @@ const signup = (req, res, next) => {
         return res.status(422).json({ errors: errors.array() });
     }
     const { username, email, password } = req.body;
-    res.status(201).json({ message: 'User Created', fields: { username, email, password } });
+    res.status(201).json({ message: 'User Created' });
 };
 exports.signup = signup;

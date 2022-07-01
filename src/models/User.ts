@@ -29,18 +29,24 @@ const userSchema = new Schema<User>({
     ref: 'User',
     default: []
   }],
-  notifications: [{
-    friend: { type: Schema.Types.ObjectId, ref: 'User' },
-    text: { type: String }
-  }],
-  chats: [{
-    friend: { type: Schema.Types.ObjectId, ref: 'User' },
-    messages: [{
-      text: { type: String },
+  notifications: {
+    type: [{
+      friend: { type: Schema.Types.ObjectId, ref: 'User' },
+      text: { type: String }
+    }],
+    default: []
+  },
+  chats: {
+    type: [{
+      friend: { type: Schema.Types.ObjectId, ref: 'User' },
+      messages: [{
+        text: { type: String },
+        created_at: { type: Date }
+      }],
       created_at: { type: Date }
     }],
-    created_at: { type: Date }
-  }],
+    default: []
+  },
   created_at: { type: Date },
   updated_at: { type: Date }
 })
