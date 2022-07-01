@@ -17,7 +17,7 @@ const userSchema = new Schema<User>({
   },
   image_path: { 
     type: String, 
-    required: false 
+    default: '' 
   },
   friends: [{
     type: Schema.Types.ObjectId,
@@ -49,4 +49,4 @@ const userSchema = new Schema<User>({
   }
 }, { timestamps: true })
 
-module.exports = mongoose.model<User>('User', userSchema)
+export default mongoose.model<User>('User', userSchema)

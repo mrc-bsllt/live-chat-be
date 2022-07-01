@@ -20,7 +20,7 @@ const userSchema = new mongoose_2.Schema({
     },
     image_path: {
         type: String,
-        required: false
+        default: ''
     },
     friends: [{
             type: mongoose_2.Schema.Types.ObjectId,
@@ -51,4 +51,4 @@ const userSchema = new mongoose_2.Schema({
         default: []
     }
 }, { timestamps: true });
-module.exports = mongoose_1.default.model('User', userSchema);
+exports.default = mongoose_1.default.model('User', userSchema);
