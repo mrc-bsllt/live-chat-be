@@ -32,19 +32,23 @@ const userSchema = new mongoose_2.Schema({
             ref: 'User',
             default: []
         }],
-    notifications: [{
-            friend: { type: mongoose_2.Schema.Types.ObjectId, ref: 'User' },
-            text: { type: String }
-        }],
-    chats: [{
-            friend: { type: mongoose_2.Schema.Types.ObjectId, ref: 'User' },
-            messages: [{
-                    text: { type: String },
-                    created_at: { type: Date }
-                }],
-            created_at: { type: Date }
-        }],
-    created_at: { type: Date },
-    updated_at: { type: Date }
-});
+    notifications: {
+        type: [{
+                friend: { type: mongoose_2.Schema.Types.ObjectId, ref: 'User' },
+                text: { type: String }
+            }],
+        default: []
+    },
+    chats: {
+        type: [{
+                friend: { type: mongoose_2.Schema.Types.ObjectId, ref: 'User' },
+                messages: [{
+                        text: { type: String },
+                        created_at: { type: Date }
+                    }],
+                created_at: { type: Date }
+            }],
+        default: []
+    }
+}, { timestamps: true });
 module.exports = mongoose_1.default.model('User', userSchema);

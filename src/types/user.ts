@@ -27,7 +27,5 @@ export interface User {
   requests_sent: Types.ObjectId[],
   notifications: Notification[],
   friends: Types.ObjectId[][],
-  chats: Chat[],
-  created_at: Date,
-  updated_at: Date
+  chats: Chat[]
 }

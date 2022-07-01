@@ -46,9 +46,7 @@ const userSchema = new Schema<User>({
       created_at: { type: Date }
     }],
     default: []
-  },
-  created_at: { type: Date },
-  updated_at: { type: Date }
-})
+  }
+}, { timestamps: true })
 
 module.exports = mongoose.model<User>('User', userSchema)
