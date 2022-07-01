@@ -1,7 +1,7 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 
-import authRoutes from './routes/auth'
+import authRoutes from './api/auth'
 
 const app = express()
 app.use(bodyParser.json())
