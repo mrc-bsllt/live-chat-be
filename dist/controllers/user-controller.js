@@ -15,8 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.get_user = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const get_user = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { user_id } = req;
-    const user = yield User_1.default.findById(user_id);
-    res.status(200).json(user);
+    const { user_id } = req.params;
+    try {
+        const user = yield User_1.default.findById(user_id);
+        res.status(200).json(user);
+    }
+    catch (error) {
+        res.status(500).json({ param: 'user', msg: 'User not found!' });
+    }
 });
 exports.get_user = get_user;

@@ -5,6 +5,6 @@ import { get_user } from '../controllers/user-controller'
 
 const router = Router()
 
-router.get('/user', is_auth, get_user)
+router.get('/user/:user_id', is_auth, get_user)
 
 export default router
