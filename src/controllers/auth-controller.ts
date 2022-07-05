@@ -1,16 +1,13 @@
-import { Request, Response, NextFunction } from "express"
+import { Response, NextFunction } from "express"
 import { validationResult } from "express-validator"
 import bcrypt from 'bcrypt'
 import UserMod from '../models/User'
 import jsonToken from 'jsonwebtoken'
 
 import type { User } from '../types/user'
+import type { RequestMod } from '../types/auth'
 
-interface RequestMod extends Request {
-  user_id?: string
-}
-
-export const signup = async (req: Request, res: Response, next: NextFunction) => {
+export const signup = async (req: RequestMod, res: Response, next: NextFunction) => {
   const errors = validationResult(req)
   if(!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() })
