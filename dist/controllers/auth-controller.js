@@ -16,6 +16,7 @@ exports.login = exports.signup = void 0;
 const express_validator_1 = require("express-validator");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const User_1 = __importDefault(require("../models/User"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
@@ -28,10 +29,21 @@ const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
     res.status(201).json({ message: 'User Created' });
 });
 exports.signup = signup;
-const login = (req, res, next) => {
+const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({ errors: errors.array() });
     }
-};
+    const { email } = req.body;
+    try {
+        const user = yield User_1.default.findOne({ email });
+        const user_id = user === null || user === void 0 ? void 0 : user._id.toString();
+        const token = jsonwebtoken_1.default.sign({ user_id, email }, 'supersecretstring', { expiresIn: '8h' });
+        req.user_id = (user === null || user === void 0 ? void 0 : user._id) || '';
+        res.status(200).json({ token, user_id, message: 'Successfully Authenticated!' });
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Server error!' });
+    }
+});
 exports.login = login;
