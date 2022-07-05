@@ -5,6 +5,7 @@ config()
 import mongoose from 'mongoose'
 
 import authRoutes from './api/auth'
+import userRoutes from './api/user'
 
 const app = express()
 app.use(bodyParser.json())
@@ -16,6 +17,7 @@ app.use((req, res, next) => {
 })
 
 app.use('/api', authRoutes)
+app.use('/api', userRoutes)
 
 mongoose.connect(process.env.MONGODB_URI!).then(() => {
   app.listen(8080)

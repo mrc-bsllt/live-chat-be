@@ -8,9 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.get_user = void 0;
+const User_1 = __importDefault(require("../models/User"));
 const get_user = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { user_id } = req.body;
+    const { user_id } = req;
+    const user = yield User_1.default.findById(user_id);
+    res.status(200).json(user);
 });
 exports.get_user = get_user;
