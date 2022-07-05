@@ -19,3 +19,10 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
   
   res.status(201).json({ message: 'User Created' })
 }
+
+export const login = (req: Request, res: Response, next: NextFunction) => {
+  const errors = validationResult(req)
+  if(!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() })
+  }
+}

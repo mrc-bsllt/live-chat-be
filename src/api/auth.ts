@@ -2,10 +2,11 @@ import { Router } from "express"
 import { check } from "express-validator"
 import type { User } from '../types/user'
 import UserMod from '../models/User'
+import bcrypt from 'bcrypt'
 
 const router = Router()
 
-import { signup } from '../controllers/auth-controller'
+import { signup, login } from '../controllers/auth-controller'
 
 router.post('/auth/signup', [
   check('username', 'The username field must contain at least 5 characters!')
@@ -37,5 +38,30 @@ router.post('/auth/signup', [
       }
     })
 ], signup)
+
+router.post('/auth/login', [
+  check('email', 'Please enter a valid e-mail!')
+    .isEmail().bail()
+    .custom(async (email) => {
+      const user = await UserMod.findOne({ email })
+      if(!user) {
+        return Promise.reject('email doesn\'t exist!')
+      }
+    }),
+  check('password', 'Invalid password!')
+    .custom(async (password, { req }) => {
+      const user = await UserMod.findOne({ email: req.body.email })
+      if(!user) {
+        return Promise.reject()
+      }
+      
+      const is_valid = await bcrypt.compare(password, user.password)
+      if(!is_valid) {
+        return Promise.reject()
+      } else {
+        return true
+      }
+    }) 
+], login)
 
 export default router

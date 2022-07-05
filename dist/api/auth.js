@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
 const User_1 = __importDefault(require("../models/User"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const router = (0, express_1.Router)();
 const auth_controller_1 = require("../controllers/auth-controller");
 router.post('/auth/signup', [
@@ -47,4 +48,28 @@ router.post('/auth/signup', [
         }
     })
 ], auth_controller_1.signup);
+router.post('/auth/login', [
+    (0, express_validator_1.check)('email', 'Please enter a valid e-mail!')
+        .isEmail().bail()
+        .custom((email) => __awaiter(void 0, void 0, void 0, function* () {
+        const user = yield User_1.default.findOne({ email });
+        if (!user) {
+            return Promise.reject('email doesn\'t exist!');
+        }
+    })),
+    (0, express_validator_1.check)('password', 'Invalid password!')
+        .custom((password, { req }) => __awaiter(void 0, void 0, void 0, function* () {
+        const user = yield User_1.default.findOne({ email: req.body.email });
+        if (!user) {
+            return Promise.reject();
+        }
+        const is_valid = yield bcrypt_1.default.compare(password, user.password);
+        if (!is_valid) {
+            return Promise.reject();
+        }
+        else {
+            return true;
+        }
+    }))
+], auth_controller_1.login);
 exports.default = router;
