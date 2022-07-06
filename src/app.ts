@@ -4,6 +4,7 @@ import { config } from 'dotenv'
 config()
 import mongoose from 'mongoose'
 import type { RequestMod } from './types/auth'
+import { seed_users } from './seeder/users'
 
 import multer from 'multer'
 const fileStorage = multer.diskStorage({
@@ -38,6 +39,9 @@ app.use('/src/storage/images', express.static(path.join(__dirname, 'storage/imag
 
 app.use('/api', authRoutes)
 app.use('/api', userRoutes)
+
+// SEEDER
+// seed_users()
 
 mongoose.connect(process.env.MONGODB_URI!).then(() => {
   app.listen(8080)

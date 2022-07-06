@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
-// import bodyParser from 'body-parser'
 const dotenv_1 = require("dotenv");
 (0, dotenv_1.config)();
 const mongoose_1 = __importDefault(require("mongoose"));
@@ -40,6 +39,8 @@ app.use((0, multer_1.default)({ storage: fileStorage, fileFilter }).single('imag
 app.use('/src/storage/images', express_1.default.static(path_1.default.join(__dirname, 'storage/images')));
 app.use('/api', auth_1.default);
 app.use('/api', user_1.default);
+// SEEDER
+// seed_users()
 mongoose_1.default.connect(process.env.MONGODB_URI).then(() => {
     app.listen(8080);
 });

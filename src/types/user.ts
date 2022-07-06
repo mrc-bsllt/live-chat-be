@@ -18,14 +18,14 @@ interface Chat {
 }
 
 export interface User {
-  _id: string
-  image_path: string,
+  _id?: string
+  image_path?: string,
   username: string
   email: string
   password: string
   confirm_password?: string
-  requests_sent: Types.ObjectId[],
-  notifications: Notification[],
-  friends: Types.ObjectId[],
-  chats: Chat[]
+  requests_sent?: Types.ObjectId[],
+  notifications?: Notification[],
+  friends?: Types.ObjectId[],
+  chats?: Chat[]
 }
