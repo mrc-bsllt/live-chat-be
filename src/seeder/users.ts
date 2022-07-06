@@ -12,6 +12,36 @@ const users: User[] = [
     username: 'test-2',
     email: 'test-2@mail.com',
     password: 'Password_1'
+  },
+  {
+    username: 'test-3',
+    email: 'test-3@mail.com',
+    password: 'Password_1'
+  },
+  {
+    username: 'test-4',
+    email: 'test-4@mail.com',
+    password: 'Password_1'
+  },
+  {
+    username: 'test-5',
+    email: 'test-5@mail.com',
+    password: 'Password_1'
+  },
+  {
+    username: 'test-6',
+    email: 'test-6@mail.com',
+    password: 'Password_1'
+  },
+  {
+    username: 'test-7',
+    email: 'test-7@mail.com',
+    password: 'Password_1'
+  },
+  {
+    username: 'test-8',
+    email: 'test-8@mail.com',
+    password: 'Password_1'
   }
 ] 
 
