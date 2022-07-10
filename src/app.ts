@@ -9,7 +9,7 @@ import { seed_users } from './seeder/users'
 import multer from 'multer'
 const fileStorage = multer.diskStorage({
   destination: (req, file, callback) => {
-    callback(null, 'src/storage/images')
+    callback(null, 'dist/storage/images')
   },
   filename: (req, file, callback) => {
     callback(null, new Date().toISOString() +  '-' + file.originalname)
@@ -35,7 +35,7 @@ app.use((req, res, next) => {
   next()
 })
 app.use(multer({ storage: fileStorage, fileFilter }).single('image_path'))
-app.use('/src/storage/images', express.static(path.join(__dirname, 'storage/images')))
+app.use('/dist/storage/images', express.static(path.join(__dirname, 'storage/images')))
 
 app.use('/api', authRoutes)
 app.use('/api', userRoutes)

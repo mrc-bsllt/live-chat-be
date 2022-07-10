@@ -15,3 +15,20 @@ export const get_user = async (req: RequestMod, res: Response, next: NextFunctio
     res.status(500).json({ param: 'user', msg: 'User not found!' })
   }
 }
+
+export const update_user_image = async (req: RequestMod, res: Response, next: NextFunction) => {
+  const user_id = req.user_id
+  const image_path = req.file?.path
+  
+  try {
+    const user = await UserMod.findById(user_id)
+    if(user) {
+      user.image_path = '/' + image_path as string
+      await user?.save()
+
+      res.status(201).json('User updated!')
+    }
+  } catch(error) {
+    res.status(500).json({ message: 'User doesn\'t found!' })
+  }
+}

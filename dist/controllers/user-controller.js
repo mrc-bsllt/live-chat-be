@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.get_user = void 0;
+exports.update_user_image = exports.get_user = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const get_user = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { user_id } = req.params;
@@ -27,3 +27,20 @@ const get_user = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.get_user = get_user;
+const update_user_image = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const user_id = req.user_id;
+    const image_path = (_a = req.file) === null || _a === void 0 ? void 0 : _a.path;
+    try {
+        const user = yield User_1.default.findById(user_id);
+        if (user) {
+            user.image_path = '/' + image_path;
+            yield (user === null || user === void 0 ? void 0 : user.save());
+            res.status(201).json('User updated!');
+        }
+    }
+    catch (error) {
+        res.status(500).json({ message: 'User doesn\'t found!' });
+    }
+});
+exports.update_user_image = update_user_image;

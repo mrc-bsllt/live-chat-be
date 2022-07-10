@@ -11,7 +11,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const multer_1 = __importDefault(require("multer"));
 const fileStorage = multer_1.default.diskStorage({
     destination: (req, file, callback) => {
-        callback(null, 'src/storage/images');
+        callback(null, 'dist/storage/images');
     },
     filename: (req, file, callback) => {
         callback(null, new Date().toISOString() + '-' + file.originalname);
@@ -36,7 +36,7 @@ app.use((req, res, next) => {
     next();
 });
 app.use((0, multer_1.default)({ storage: fileStorage, fileFilter }).single('image_path'));
-app.use('/src/storage/images', express_1.default.static(path_1.default.join(__dirname, 'storage/images')));
+app.use('/dist/storage/images', express_1.default.static(path_1.default.join(__dirname, 'storage/images')));
 app.use('/api', auth_1.default);
 app.use('/api', user_1.default);
 // SEEDER
