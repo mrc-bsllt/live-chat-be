@@ -17,7 +17,9 @@ const User_1 = __importDefault(require("../models/User"));
 const get_user = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { user_id } = req.params;
     try {
-        const user = yield User_1.default.findById(user_id);
+        const user = yield User_1.default.findById(user_id).lean();
+        user === null || user === void 0 ? true : delete user.password;
+        user === null || user === void 0 ? true : delete user.chats;
         res.status(200).json(user);
     }
     catch (error) {

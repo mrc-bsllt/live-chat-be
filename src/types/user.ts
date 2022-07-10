@@ -22,7 +22,7 @@ export interface User {
   image_path?: string,
   username: string
   email: string
-  password: string
+  password?: string
   confirm_password?: string
   requests_sent?: Types.ObjectId[],
   notifications?: Notification[],

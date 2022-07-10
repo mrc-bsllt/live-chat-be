@@ -14,7 +14,7 @@ export const signup = async (req: RequestMod, res: Response, next: NextFunction)
   }
 
   const { username, email, password } = req.body as User
-  const hashed_password = await bcrypt.hash(password, 12)
+  const hashed_password = await bcrypt.hash(password as string, 12)
 
   const user = new UserMod({ username, email, password: hashed_password })
   await user.save()

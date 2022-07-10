@@ -55,7 +55,7 @@ router.post('/auth/login', [
         return Promise.reject()
       }
       
-      const is_valid = await bcrypt.compare(password, user.password)
+      const is_valid = await bcrypt.compare(password, user.password as string)
       if(!is_valid) {
         return Promise.reject()
       } else {

@@ -48,7 +48,7 @@ const users: User[] = [
 export const seed_users = async () => {
   await Promise.all(users.map(async user => {
     const { username, email, password } = user
-    const hashed_password = await bcrypt.hash(password, 12)
+    const hashed_password = await bcrypt.hash(password as string, 12)
     const newUser = new UserMod({ username, email, password: hashed_password })
 
     await newUser.save()
