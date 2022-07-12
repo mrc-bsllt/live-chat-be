@@ -8,6 +8,7 @@ const path_1 = __importDefault(require("path"));
 const dotenv_1 = require("dotenv");
 (0, dotenv_1.config)();
 const mongoose_1 = __importDefault(require("mongoose"));
+const socket_io_1 = require("socket.io");
 const multer_1 = __importDefault(require("multer"));
 const fileStorage = multer_1.default.diskStorage({
     destination: (req, file, callback) => {
@@ -42,5 +43,14 @@ app.use('/api', user_1.default);
 // SEEDER
 // seed_users()
 mongoose_1.default.connect(process.env.MONGODB_URI).then(() => {
-    app.listen(8080);
+    const server = app.listen(8080);
+    const io = new socket_io_1.Server(server, {
+        cors: {
+            origin: "http://localhost:3000",
+            methods: ["GET", "POST"]
+        }
+    });
+    io.on('connection', socket => {
+        console.log('Client connected!');
+    });
 });
