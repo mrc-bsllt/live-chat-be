@@ -29,9 +29,14 @@ const get_user = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.get_user = get_user;
 const update_user_image = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _a, _b;
     const user_id = req.user_id;
-    const image_path = (_a = req.file) === null || _a === void 0 ? void 0 : _a.path;
+    const mimetype = (_a = req.file) === null || _a === void 0 ? void 0 : _a.mimetype;
+    const accepted_mimetype = ['image/png', 'image/jpg', 'image/jpeg', 'image/webp'];
+    if (!accepted_mimetype.includes(mimetype)) {
+        return res.status(422).json({ param: 'image_patgh', msg: 'Invalid format!' });
+    }
+    const image_path = (_b = req.file) === null || _b === void 0 ? void 0 : _b.path;
     try {
         const user = yield User_1.default.findById(user_id);
         if (user) {

@@ -19,6 +19,13 @@ export const get_user = async (req: RequestMod, res: Response, next: NextFunctio
 
 export const update_user_image = async (req: RequestMod, res: Response, next: NextFunction) => {
   const user_id = req.user_id
+
+  const mimetype = req.file?.mimetype as string
+  const accepted_mimetype = ['image/png', 'image/jpg', 'image/jpeg', 'image/webp']
+  if(!accepted_mimetype.includes(mimetype)) {
+    return res.status(422).json({ param: 'image_patgh', msg: 'Invalid format!' })
+  }
+
   const image_path = req.file?.path
   
   try {
