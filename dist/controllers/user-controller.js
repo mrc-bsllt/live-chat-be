@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.update_user_image = exports.get_user = void 0;
 const User_1 = __importDefault(require("../models/User"));
+const delete_image_1 = __importDefault(require("../utils/delete-image"));
 const get_user = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { user_id } = req.params;
     try {
@@ -34,6 +35,9 @@ const update_user_image = (req, res, next) => __awaiter(void 0, void 0, void 0, 
     try {
         const user = yield User_1.default.findById(user_id);
         if (user) {
+            if (user.image_path) {
+                (0, delete_image_1.default)(user.image_path);
+            }
             user.image_path = '/' + image_path;
             yield (user === null || user === void 0 ? void 0 : user.save());
             res.status(201).json('User updated!');

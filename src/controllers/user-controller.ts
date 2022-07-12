@@ -1,6 +1,7 @@
 import { Response, NextFunction } from 'express'
 import type { RequestMod } from '../types/auth'
 import UserMod from '../models/User'
+import delete_image from '../utils/delete-image'
 
 export const get_user = async (req: RequestMod, res: Response, next: NextFunction) => {
   const { user_id } = req.params
@@ -23,6 +24,10 @@ export const update_user_image = async (req: RequestMod, res: Response, next: Ne
   try {
     const user = await UserMod.findById(user_id)
     if(user) {
+      if(user.image_path) {
+        delete_image(user.image_path)
+      }
+
       user.image_path = '/' + image_path as string
       await user?.save()
 
