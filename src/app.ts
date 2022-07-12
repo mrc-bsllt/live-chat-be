@@ -26,6 +26,7 @@ const fileFilter = (req: RequestMod, file: Express.Multer.File, callback: multer
 
 import authRoutes from './api/auth'
 import userRoutes from './api/user'
+import friendRoutes from './api/friend'
 
 const app = express()
 app.use(express.json())
@@ -40,6 +41,7 @@ app.use('/dist/storage/images', express.static(path.join(__dirname, 'storage/ima
 
 app.use('/api', authRoutes)
 app.use('/api', userRoutes)
+app.use('/api', friendRoutes)
 
 // SEEDER
 // seed_users()

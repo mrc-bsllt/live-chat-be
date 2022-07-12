@@ -28,6 +28,7 @@ const fileFilter = (req, file, callback) => {
 };
 const auth_1 = __importDefault(require("./api/auth"));
 const user_1 = __importDefault(require("./api/user"));
+const friend_1 = __importDefault(require("./api/friend"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((req, res, next) => {
@@ -40,6 +41,7 @@ app.use((0, multer_1.default)({ storage: fileStorage, fileFilter }).single('imag
 app.use('/dist/storage/images', express_1.default.static(path_1.default.join(__dirname, 'storage/images')));
 app.use('/api', auth_1.default);
 app.use('/api', user_1.default);
+app.use('/api', friend_1.default);
 // SEEDER
 // seed_users()
 mongoose_1.default.connect(process.env.MONGODB_URI).then(() => {
