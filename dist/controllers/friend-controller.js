@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.accept_friendship = exports.reject_request = exports.send_request = exports.search_friends_by_username = void 0;
+exports.remove_friendship = exports.accept_friendship = exports.reject_request = exports.send_request = exports.search_friends_by_username = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const search_friends_by_username = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { user_value } = req.params;
@@ -89,3 +89,25 @@ const accept_friendship = (req, res, next) => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.accept_friendship = accept_friendship;
+const remove_friendship = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _j, _k;
+    const user_id = req.user_id;
+    const friend_id = req.body.friend_id;
+    try {
+        const [user, friend] = yield Promise.all([
+            User_1.default.findById(user_id),
+            User_1.default.findById(friend_id)
+        ]);
+        if (user && friend) {
+            user.friends = (_j = user === null || user === void 0 ? void 0 : user.friends) === null || _j === void 0 ? void 0 : _j.filter(friend => friend._id.toString() !== friend_id.toString());
+            friend.friends = (_k = friend === null || friend === void 0 ? void 0 : friend.friends) === null || _k === void 0 ? void 0 : _k.filter(friend => friend._id.toString() !== user_id.toString());
+            yield Promise.all([user.save(), friend.save()]);
+            return res.status(201).json({ message: 'Friendship removed!' });
+        }
+        res.status(500).json({ param: 'server', msg: 'Server error!' });
+    }
+    catch (error) {
+        res.status(500).json({ param: 'server', msg: 'Server error!' });
+    }
+});
+exports.remove_friendship = remove_friendship;

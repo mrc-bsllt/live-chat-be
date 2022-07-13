@@ -86,3 +86,27 @@ export const accept_friendship = async (req: RequestMod, res: Response, next: Ne
     res.status(500).json({ param: 'server', msg: 'Server error!' })
   }
 }
+
+export const remove_friendship = async (req: RequestMod, res: Response, next: NextFunction) => {
+  const user_id = req.user_id as Types.ObjectId
+  const friend_id = req.body.friend_id as Types.ObjectId
+  
+  try {
+    const [user, friend] = await Promise.all([
+      UserMod.findById(user_id),
+      UserMod.findById(friend_id)
+    ])
+
+    if(user && friend) {
+      user.friends = user?.friends?.filter(friend => friend._id.toString() !== friend_id.toString())
+      friend.friends = friend?.friends?.filter(friend => friend._id.toString() !== user_id.toString())
+  
+      await Promise.all([user.save(), friend.save()])
+      return res.status(201).json({ message: 'Friendship removed!' })
+    }
+
+    res.status(500).json({ param: 'server', msg: 'Server error!' })
+  } catch(error) {
+    res.status(500).json({ param: 'server', msg: 'Server error!' })
+  }
+}
