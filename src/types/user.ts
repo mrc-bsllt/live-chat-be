@@ -25,6 +25,7 @@ export interface User {
   password?: string
   confirm_password?: string
   requests_sent?: Types.ObjectId[],
+  requests_received?: Types.ObjectId[],
   notifications?: Notification[],
   friends?: Types.ObjectId[],
   chats?: Chat[]

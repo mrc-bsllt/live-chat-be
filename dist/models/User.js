@@ -32,6 +32,11 @@ const userSchema = new mongoose_2.Schema({
             ref: 'User',
             default: []
         }],
+    requests_received: [{
+            type: mongoose_2.Schema.Types.ObjectId,
+            ref: 'User',
+            default: []
+        }],
     notifications: {
         type: [{
                 friend: { type: mongoose_2.Schema.Types.ObjectId, ref: 'User' },

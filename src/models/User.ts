@@ -29,6 +29,11 @@ const userSchema = new Schema<User>({
     ref: 'User',
     default: []
   }],
+  requests_received: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    default: []
+  }],
   notifications: {
     type: [{
       friend: { type: Schema.Types.ObjectId, ref: 'User' },
