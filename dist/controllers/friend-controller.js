@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.send_request = exports.search_friends_by_username = void 0;
+exports.reject_request = exports.send_request = exports.search_friends_by_username = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const search_friends_by_username = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { user_value } = req.params;
@@ -26,7 +26,6 @@ const search_friends_by_username = (req, res, next) => __awaiter(void 0, void 0,
 exports.search_friends_by_username = search_friends_by_username;
 const send_request = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
-    console.log('FIRED SEND_REQUEST -------------------------------------');
     const user_id = req.user_id;
     const friend_id = req.body.friend_id;
     try {
@@ -35,7 +34,7 @@ const send_request = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
             User_1.default.findById(friend_id)
         ]);
         (_a = user === null || user === void 0 ? void 0 : user.requests_sent) === null || _a === void 0 ? void 0 : _a.push(friend_id);
-        (_b = friend === null || friend === void 0 ? void 0 : friend.notifications) === null || _b === void 0 ? void 0 : _b.push({ friend: user_id, text: `${user === null || user === void 0 ? void 0 : user.username} Ti ha inviato una richiesta di amicizia` });
+        (_b = friend === null || friend === void 0 ? void 0 : friend.notifications) === null || _b === void 0 ? void 0 : _b.push({ friend: user_id, text: "Ti ha inviato una richiesta di amicizia" });
         yield Promise.all([user === null || user === void 0 ? void 0 : user.save(), friend === null || friend === void 0 ? void 0 : friend.save()]);
         res.status(201).json({ message: 'request sent!' });
     }
@@ -44,3 +43,25 @@ const send_request = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.send_request = send_request;
+const reject_request = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _c, _d;
+    const user_id = req.user_id;
+    const friend_id = req.body.friend_id;
+    try {
+        const [user, friend] = yield Promise.all([
+            User_1.default.findById(user_id),
+            User_1.default.findById(friend_id)
+        ]);
+        if (user && friend) {
+            user.notifications = (_c = user === null || user === void 0 ? void 0 : user.notifications) === null || _c === void 0 ? void 0 : _c.filter(notify => notify.friend._id.toString() !== friend_id);
+            friend.requests_sent = (_d = friend === null || friend === void 0 ? void 0 : friend.requests_sent) === null || _d === void 0 ? void 0 : _d.filter(request => request._id.toString() !== user_id);
+            yield Promise.all([user.save(), friend.save()]);
+            return res.status(201).json({ message: 'Request rejected!' });
+        }
+        res.status(500).json({ param: 'server', msg: 'Server error!' });
+    }
+    catch (error) {
+        res.status(500).json({ param: 'server', msg: 'Server error!' });
+    }
+});
+exports.reject_request = reject_request;

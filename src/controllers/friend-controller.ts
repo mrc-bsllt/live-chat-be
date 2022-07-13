@@ -26,11 +26,36 @@ export const send_request = async (req: RequestMod, res: Response, next: NextFun
     ])
   
     user?.requests_sent?.push(friend_id)
-    friend?.notifications?.push({ friend: user_id, text: `${user?.username} Ti ha inviato una richiesta di amicizia` })
+    friend?.notifications?.push({ friend: user_id, text: "Ti ha inviato una richiesta di amicizia" })
 
     await Promise.all([user?.save(), friend?.save()])
 
     res.status(201).json({ message: 'request sent!' })
+  } catch(error) {
+    res.status(500).json({ param: 'server', msg: 'Server error!' })
+  }
+}
+
+export const reject_request = async (req: RequestMod, res: Response, next: NextFunction) => {
+  const user_id = req.user_id as string
+  const friend_id = req.body.friend_id as string
+  
+  try {
+    const [user, friend] = await Promise.all([
+      UserMod.findById(user_id),
+      UserMod.findById(friend_id)
+    ])
+
+    if(user && friend) {
+      user.notifications = user?.notifications?.filter(notify => notify.friend._id.toString() !== friend_id)
+      friend.requests_sent = friend?.requests_sent?.filter(request => request._id.toString() !== user_id)
+
+      await Promise.all([user.save(), friend.save()])
+
+      return res.status(201).json({ message: 'Request rejected!' })
+    }
+
+    res.status(500).json({ param: 'server', msg: 'Server error!' })
   } catch(error) {
     res.status(500).json({ param: 'server', msg: 'Server error!' })
   }
