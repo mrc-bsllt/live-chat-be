@@ -7,6 +7,6 @@ export const search_friends_by_username = async (req: RequestMod, res: Response,
   const { user_value } = req.params
   const regex = new RegExp("^" + user_value)
   
-  const users = ( await UserMod.find({ username: regex }) ).filter(user => user._id.toString() !== req.user_id)
+  const users = await UserMod.find({ username: regex }).where('_id').ne(req.user_id).limit(5)
   res.status(200).json(users)
 }

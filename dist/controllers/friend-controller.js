@@ -17,7 +17,7 @@ const User_1 = __importDefault(require("../models/User"));
 const search_friends_by_username = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { user_value } = req.params;
     const regex = new RegExp("^" + user_value);
-    const users = (yield User_1.default.find({ username: regex })).filter(user => user._id.toString() !== req.user_id);
+    const users = yield User_1.default.find({ username: regex }).where('_id').ne(req.user_id).limit(5);
     res.status(200).json(users);
 });
 exports.search_friends_by_username = search_friends_by_username;
