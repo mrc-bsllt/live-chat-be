@@ -1,7 +1,7 @@
 import { Types } from 'mongoose'
 
 interface Notification {
-  friend: Types.ObjectId[],
+  friend: Types.ObjectId,
   text: string
 }
 
@@ -18,7 +18,7 @@ interface Chat {
 }
 
 export interface User {
-  _id?: string
+  _id?: Types.ObjectId
   image_path?: string,
   username: string
   email: string

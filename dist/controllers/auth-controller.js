@@ -37,9 +37,9 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
     const { email } = req.body;
     try {
         const user = yield User_1.default.findOne({ email });
-        const user_id = user === null || user === void 0 ? void 0 : user._id.toString();
+        const user_id = user === null || user === void 0 ? void 0 : user._id;
         const token = jsonwebtoken_1.default.sign({ user_id, email }, 'supersecretstring', { expiresIn: '8h' });
-        req.user_id = (user === null || user === void 0 ? void 0 : user._id) || '';
+        req.user_id = user === null || user === void 0 ? void 0 : user._id;
         res.status(200).json({ token, user_id, message: 'Successfully Authenticated!' });
     }
     catch (error) {
