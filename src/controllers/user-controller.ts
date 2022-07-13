@@ -7,7 +7,8 @@ export const get_user = async (req: RequestMod, res: Response, next: NextFunctio
   const { user_id } = req.params
   
   try {
-    const user = await UserMod.findById(user_id).lean()
+    const user = await UserMod.findById(user_id).populate('friends requests_sent notifications.friend').lean()
+
     delete user?.password
     delete user?.chats
     
