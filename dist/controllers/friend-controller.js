@@ -34,7 +34,7 @@ const send_request = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
             User_1.default.findById(friend_id)
         ]);
         (_a = user === null || user === void 0 ? void 0 : user.requests_sent) === null || _a === void 0 ? void 0 : _a.push(friend_id);
-        (_b = friend === null || friend === void 0 ? void 0 : friend.notifications) === null || _b === void 0 ? void 0 : _b.push({ friend: user_id, text: "Ti ha inviato una richiesta di amicizia" });
+        (_b = friend === null || friend === void 0 ? void 0 : friend.requests_received) === null || _b === void 0 ? void 0 : _b.push(user_id);
         yield Promise.all([user === null || user === void 0 ? void 0 : user.save(), friend === null || friend === void 0 ? void 0 : friend.save()]);
         res.status(201).json({ message: 'request sent!' });
     }
@@ -53,7 +53,7 @@ const reject_request = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
             User_1.default.findById(friend_id)
         ]);
         if (user && friend) {
-            user.notifications = (_c = user === null || user === void 0 ? void 0 : user.notifications) === null || _c === void 0 ? void 0 : _c.filter(notify => notify.friend._id.toString() !== friend_id);
+            user.requests_received = (_c = user === null || user === void 0 ? void 0 : user.requests_received) === null || _c === void 0 ? void 0 : _c.filter(request => request._id.toString() !== friend_id);
             friend.requests_sent = (_d = friend === null || friend === void 0 ? void 0 : friend.requests_sent) === null || _d === void 0 ? void 0 : _d.filter(request => request._id.toString() !== user_id);
             yield Promise.all([user.save(), friend.save()]);
             return res.status(201).json({ message: 'Request rejected!' });

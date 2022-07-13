@@ -18,7 +18,7 @@ const delete_image_1 = __importDefault(require("../utils/delete-image"));
 const get_user = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { user_id } = req.params;
     try {
-        const user = yield User_1.default.findById(user_id).populate('friends requests_sent notifications.friend').lean();
+        const user = yield User_1.default.findById(user_id).populate('friends requests_sent requests_received notifications.friend').lean();
         user === null || user === void 0 ? true : delete user.password;
         user === null || user === void 0 ? true : delete user.chats;
         res.status(200).json(user);

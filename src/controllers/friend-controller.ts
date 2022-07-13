@@ -26,7 +26,7 @@ export const send_request = async (req: RequestMod, res: Response, next: NextFun
     ])
   
     user?.requests_sent?.push(friend_id)
-    friend?.notifications?.push({ friend: user_id, text: "Ti ha inviato una richiesta di amicizia" })
+    friend?.requests_received?.push(user_id)
 
     await Promise.all([user?.save(), friend?.save()])
 
@@ -47,7 +47,7 @@ export const reject_request = async (req: RequestMod, res: Response, next: NextF
     ])
 
     if(user && friend) {
-      user.notifications = user?.notifications?.filter(notify => notify.friend._id.toString() !== friend_id)
+      user.requests_received = user?.requests_received?.filter(request => request._id.toString() !== friend_id)
       friend.requests_sent = friend?.requests_sent?.filter(request => request._id.toString() !== user_id)
 
       await Promise.all([user.save(), friend.save()])
