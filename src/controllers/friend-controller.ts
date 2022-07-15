@@ -43,7 +43,7 @@ export const send_request = async (req: RequestMod, res: Response, next: NextFun
 }
 
 export const reject_request = async (req: RequestMod, res: Response, next: NextFunction) => {
-  const user_id: Types.ObjectId | string | undefined = req.user_id
+  const user_id: Types.ObjectId | string = req.user_id!
   const friend_id = req.body.friend_id as string
   
   try {
