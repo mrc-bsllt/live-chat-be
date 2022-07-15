@@ -5,7 +5,8 @@ config()
 import mongoose from 'mongoose'
 import type { RequestMod } from './types/auth'
 import { seed_users } from './seeder/users'
-import { Server } from "socket.io"
+// import { Server } from "socket.io"
+import { init } from './socket'
 
 import multer from 'multer'
 const fileStorage = multer.diskStorage({
@@ -48,13 +49,15 @@ app.use('/api', friendRoutes)
 
 mongoose.connect(process.env.MONGODB_URI!).then(() => {
   const server = app.listen(8080)
-  const io = new Server(server, {
-    cors: {
-      origin: "http://localhost:3000",
-      methods: ["GET", "POST"]
-    }
-  })
+  const io = init(server)
+  // const io = new Server(server, {
+  //   cors: {
+  //     origin: "http://localhost:3000",
+  //     methods: ["GET", "POST"]
+  //   }
+  // })
 
+  // @ts-ignore
   io.on('connection', socket => {
     console.log('Client connected!')
   })

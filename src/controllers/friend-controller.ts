@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express"
 import UserMod from '../models/User'
+import { getIO } from '../socket'
 
 import { Types } from 'mongoose'
 import type { RequestMod } from '../types/auth'
@@ -29,6 +30,8 @@ export const send_request = async (req: RequestMod, res: Response, next: NextFun
     friend?.requests_received?.push(user_id)
 
     await Promise.all([user?.save(), friend?.save()])
+    
+    getIO().emit('requests', { action: 'send', user, friend_id })
 
     res.status(201).json({ message: 'request sent!' })
   } catch(error) {

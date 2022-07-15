@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.remove_friendship = exports.accept_friendship = exports.reject_request = exports.send_request = exports.search_friends_by_username = void 0;
 const User_1 = __importDefault(require("../models/User"));
+const socket_1 = require("../socket");
 const search_friends_by_username = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { user_value } = req.params;
     const regex = new RegExp("^" + user_value);
@@ -36,6 +37,7 @@ const send_request = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         (_a = user === null || user === void 0 ? void 0 : user.requests_sent) === null || _a === void 0 ? void 0 : _a.push(friend_id);
         (_b = friend === null || friend === void 0 ? void 0 : friend.requests_received) === null || _b === void 0 ? void 0 : _b.push(user_id);
         yield Promise.all([user === null || user === void 0 ? void 0 : user.save(), friend === null || friend === void 0 ? void 0 : friend.save()]);
+        (0, socket_1.getIO)().emit('requests', { action: 'send', user, friend_id });
         res.status(201).json({ message: 'request sent!' });
     }
     catch (error) {
