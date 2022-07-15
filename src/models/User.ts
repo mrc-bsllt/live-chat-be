@@ -37,7 +37,8 @@ const userSchema = new Schema<User>({
   notifications: {
     type: [{
       friend: { type: Schema.Types.ObjectId, ref: 'User' },
-      text: { type: String }
+      text: { type: String },
+      saw: { type: Boolean, default: false }
     }],
     default: []
   },

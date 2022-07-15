@@ -40,7 +40,8 @@ const userSchema = new mongoose_2.Schema({
     notifications: {
         type: [{
                 friend: { type: mongoose_2.Schema.Types.ObjectId, ref: 'User' },
-                text: { type: String }
+                text: { type: String },
+                saw: { type: Boolean, default: false }
             }],
         default: []
     },

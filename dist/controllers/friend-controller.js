@@ -26,7 +26,7 @@ const search_friends_by_username = (req, res, next) => __awaiter(void 0, void 0,
 });
 exports.search_friends_by_username = search_friends_by_username;
 const send_request = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+    var _a, _b, _c;
     const user_id = req.user_id;
     const friend_id = req.body.friend_id;
     try {
@@ -35,7 +35,9 @@ const send_request = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
             User_1.default.findById(friend_id)
         ]);
         (_a = user === null || user === void 0 ? void 0 : user.requests_sent) === null || _a === void 0 ? void 0 : _a.push(friend_id);
+        const new_notification = { friend: user_id, text: 'Ti ha inviato una richiesta di amicizia.' };
         (_b = friend === null || friend === void 0 ? void 0 : friend.requests_received) === null || _b === void 0 ? void 0 : _b.push(user_id);
+        (_c = friend === null || friend === void 0 ? void 0 : friend.notifications) === null || _c === void 0 ? void 0 : _c.push(new_notification);
         yield Promise.all([user === null || user === void 0 ? void 0 : user.save(), friend === null || friend === void 0 ? void 0 : friend.save()]);
         (0, socket_1.getIO)().emit('requests', { action: 'send-request', user, friend_id });
         res.status(201).json({ message: 'request sent!' });
@@ -46,7 +48,7 @@ const send_request = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
 });
 exports.send_request = send_request;
 const reject_request = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c, _d;
+    var _d, _e, _f;
     const user_id = req.user_id;
     const friend_id = req.body.friend_id;
     try {
@@ -55,8 +57,10 @@ const reject_request = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
             User_1.default.findById(friend_id)
         ]);
         if (user && friend) {
-            user.requests_received = (_c = user === null || user === void 0 ? void 0 : user.requests_received) === null || _c === void 0 ? void 0 : _c.filter(request => request._id.toString() !== friend_id);
-            friend.requests_sent = (_d = friend === null || friend === void 0 ? void 0 : friend.requests_sent) === null || _d === void 0 ? void 0 : _d.filter(request => request._id.toString() !== user_id);
+            user.requests_received = (_d = user === null || user === void 0 ? void 0 : user.requests_received) === null || _d === void 0 ? void 0 : _d.filter(request => request._id.toString() !== friend_id);
+            friend.requests_sent = (_e = friend === null || friend === void 0 ? void 0 : friend.requests_sent) === null || _e === void 0 ? void 0 : _e.filter(request => request._id.toString() !== user_id);
+            const new_notification = { friend: user_id, text: 'Non ha accettato la tua richiesta di amicizia.' };
+            (_f = friend === null || friend === void 0 ? void 0 : friend.notifications) === null || _f === void 0 ? void 0 : _f.push(new_notification);
             yield Promise.all([user.save(), friend.save()]);
             (0, socket_1.getIO)().emit('requests', { action: 'reject-request', friend_id });
             return res.status(201).json({ message: 'Request rejected!' });
@@ -69,7 +73,7 @@ const reject_request = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
 });
 exports.reject_request = reject_request;
 const accept_friendship = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _e, _f, _g, _h;
+    var _g, _h, _j, _k, _l;
     const user_id = req.user_id;
     const friend_id = req.body.friend_id;
     try {
@@ -78,10 +82,12 @@ const accept_friendship = (req, res, next) => __awaiter(void 0, void 0, void 0, 
             User_1.default.findById(friend_id)
         ]);
         if (user && friend) {
-            (_e = user.friends) === null || _e === void 0 ? void 0 : _e.push(friend_id);
-            (_f = friend.friends) === null || _f === void 0 ? void 0 : _f.push(user_id);
-            user.requests_received = (_g = user === null || user === void 0 ? void 0 : user.requests_received) === null || _g === void 0 ? void 0 : _g.filter(request => request._id.toString() !== friend_id.toString());
-            friend.requests_sent = (_h = friend === null || friend === void 0 ? void 0 : friend.requests_sent) === null || _h === void 0 ? void 0 : _h.filter(request => request._id.toString() !== user_id.toString());
+            (_g = user.friends) === null || _g === void 0 ? void 0 : _g.push(friend_id);
+            user.requests_received = (_h = user === null || user === void 0 ? void 0 : user.requests_received) === null || _h === void 0 ? void 0 : _h.filter(request => request._id.toString() !== friend_id.toString());
+            (_j = friend.friends) === null || _j === void 0 ? void 0 : _j.push(user_id);
+            friend.requests_sent = (_k = friend === null || friend === void 0 ? void 0 : friend.requests_sent) === null || _k === void 0 ? void 0 : _k.filter(request => request._id.toString() !== user_id.toString());
+            const new_notification = { friend: user_id, text: 'Ha accettato la tua richiesta di amicizia.' };
+            (_l = friend === null || friend === void 0 ? void 0 : friend.notifications) === null || _l === void 0 ? void 0 : _l.push(new_notification);
             yield Promise.all([user.save(), friend.save()]);
             (0, socket_1.getIO)().emit('requests', { action: 'accept-request', user, friend_id });
             return res.status(201).json({ message: 'Friendship accepted!' });
@@ -94,7 +100,7 @@ const accept_friendship = (req, res, next) => __awaiter(void 0, void 0, void 0, 
 });
 exports.accept_friendship = accept_friendship;
 const remove_friendship = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _j, _k;
+    var _m, _o, _p;
     const user_id = req.user_id;
     const friend_id = req.body.friend_id;
     try {
@@ -103,8 +109,10 @@ const remove_friendship = (req, res, next) => __awaiter(void 0, void 0, void 0, 
             User_1.default.findById(friend_id)
         ]);
         if (user && friend) {
-            user.friends = (_j = user === null || user === void 0 ? void 0 : user.friends) === null || _j === void 0 ? void 0 : _j.filter(friend => friend._id.toString() !== friend_id.toString());
-            friend.friends = (_k = friend === null || friend === void 0 ? void 0 : friend.friends) === null || _k === void 0 ? void 0 : _k.filter(friend => friend._id.toString() !== user_id.toString());
+            user.friends = (_m = user === null || user === void 0 ? void 0 : user.friends) === null || _m === void 0 ? void 0 : _m.filter(friend => friend._id.toString() !== friend_id.toString());
+            friend.friends = (_o = friend === null || friend === void 0 ? void 0 : friend.friends) === null || _o === void 0 ? void 0 : _o.filter(friend => friend._id.toString() !== user_id.toString());
+            const new_notification = { friend: user_id, text: 'Non ha accettato la tua richiesta di amicizia.' };
+            (_p = friend === null || friend === void 0 ? void 0 : friend.notifications) === null || _p === void 0 ? void 0 : _p.push(new_notification);
             yield Promise.all([user.save(), friend.save()]);
             (0, socket_1.getIO)().emit('requests', { action: 'remove-request', friend_id });
             return res.status(201).json({ message: 'Friendship removed!' });
