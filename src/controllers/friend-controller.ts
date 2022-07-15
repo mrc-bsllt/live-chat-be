@@ -30,8 +30,7 @@ export const send_request = async (req: RequestMod, res: Response, next: NextFun
     friend?.requests_received?.push(user_id)
 
     await Promise.all([user?.save(), friend?.save()])
-    
-    getIO().emit('requests', { action: 'send', user, friend_id })
+    getIO().emit('requests', { action: 'send-request', user, friend_id })
 
     res.status(201).json({ message: 'request sent!' })
   } catch(error) {
@@ -54,6 +53,7 @@ export const reject_request = async (req: RequestMod, res: Response, next: NextF
       friend.requests_sent = friend?.requests_sent?.filter(request => request._id.toString() !== user_id)
 
       await Promise.all([user.save(), friend.save()])
+      getIO().emit('requests', { action: 'reject-request', friend_id })
 
       return res.status(201).json({ message: 'Request rejected!' })
     }
@@ -81,6 +81,8 @@ export const accept_friendship = async (req: RequestMod, res: Response, next: Ne
       friend.requests_sent = friend?.requests_sent?.filter(request => request._id.toString() !== user_id.toString())
   
       await Promise.all([user.save(), friend.save()])
+      getIO().emit('requests', { action: 'accept-request', user, friend_id })
+
       return res.status(201).json({ message: 'Friendship accepted!' })
     }
 
@@ -105,6 +107,8 @@ export const remove_friendship = async (req: RequestMod, res: Response, next: Ne
       friend.friends = friend?.friends?.filter(friend => friend._id.toString() !== user_id.toString())
   
       await Promise.all([user.save(), friend.save()])
+      getIO().emit('requests', { action: 'remove-request', friend_id })
+
       return res.status(201).json({ message: 'Friendship removed!' })
     }
 
