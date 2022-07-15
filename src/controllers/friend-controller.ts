@@ -28,12 +28,13 @@ export const send_request = async (req: RequestMod, res: Response, next: NextFun
   
     user?.requests_sent?.push(friend_id)
 
-    const new_notification = { friend: user_id, text: 'Ti ha inviato una richiesta di amicizia.' }
+    const text_notification = 'Ti ha inviato una richiesta di amicizia.'
+    const new_notification = { friend: user_id, text: text_notification }
     friend?.requests_received?.push(user_id)
     friend?.notifications?.push(new_notification)
 
     await Promise.all([user?.save(), friend?.save()])
-    getIO().emit('requests', { action: 'send-request', user, friend_id })
+    getIO().emit('requests', { action: 'send-request', user, friend_id, text_notification })
 
     res.status(201).json({ message: 'request sent!' })
   } catch(error) {
@@ -55,11 +56,12 @@ export const reject_request = async (req: RequestMod, res: Response, next: NextF
       user.requests_received = user?.requests_received?.filter(request => request._id.toString() !== friend_id)
 
       friend.requests_sent = friend?.requests_sent?.filter(request => request._id.toString() !== user_id)
-      const new_notification = { friend: user_id as Types.ObjectId, text: 'Non ha accettato la tua richiesta di amicizia.' }
+      const text_notification = 'Non ha accettato la tua richiesta di amicizia.'
+      const new_notification = { friend: user_id as Types.ObjectId, text: text_notification }
       friend?.notifications?.push(new_notification)
 
       await Promise.all([user.save(), friend.save()])
-      getIO().emit('requests', { action: 'reject-request', friend_id })
+      getIO().emit('requests', { action: 'reject-request', user, friend_id, text_notification })
 
       return res.status(201).json({ message: 'Request rejected!' })
     }
@@ -86,11 +88,12 @@ export const accept_friendship = async (req: RequestMod, res: Response, next: Ne
 
       friend.friends?.push(user_id)
       friend.requests_sent = friend?.requests_sent?.filter(request => request._id.toString() !== user_id.toString())
-      const new_notification = { friend: user_id, text: 'Ha accettato la tua richiesta di amicizia.' }
+      const text_notification = 'Ha accettato la tua richiesta di amicizia.'
+      const new_notification = { friend: user_id, text: text_notification }
       friend?.notifications?.push(new_notification)
 
       await Promise.all([user.save(), friend.save()])
-      getIO().emit('requests', { action: 'accept-request', user, friend_id })
+      getIO().emit('requests', { action: 'accept-request', user, friend_id, text_notification })
 
       return res.status(201).json({ message: 'Friendship accepted!' })
     }
@@ -115,11 +118,12 @@ export const remove_friendship = async (req: RequestMod, res: Response, next: Ne
       user.friends = user?.friends?.filter(friend => friend._id.toString() !== friend_id.toString())
 
       friend.friends = friend?.friends?.filter(friend => friend._id.toString() !== user_id.toString())
-      const new_notification = { friend: user_id, text: 'Non ha accettato la tua richiesta di amicizia.' }
+      const text_notification = 'Ti ha eliminato dagli amici.'
+      const new_notification = { friend: user_id, text: text_notification }
       friend?.notifications?.push(new_notification)
 
       await Promise.all([user.save(), friend.save()])
-      getIO().emit('requests', { action: 'remove-request', friend_id })
+      getIO().emit('requests', { action: 'remove-request', user, friend_id, text_notification })
 
       return res.status(201).json({ message: 'Friendship removed!' })
     }
